@@ -1,0 +1,51 @@
+from customtkinter import CTk, CTkFrame, CTkLabel, CTkEntry, CTkButton, CTkImage, CTkScrollableFrame, CTkOptionMenu, set_appearance_mode
+
+def mudar_tema():
+    global modo_dark
+    modo_dark= not modo_dark
+
+    if modo_dark:
+        set_appearance_mode("dark")
+        botao_tema.configure(text="Modo Claro")
+    else :
+        set_appearance_mode("light")
+        botao_tema.configure(text="Modo Escuro")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app=CTk()
+app.geometry("800x600")
+app.title("Calculadora")
+
+
+
+
+
+app.mainloop
