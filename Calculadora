@@ -1,7 +1,12 @@
 from customtkinter import CTk, CTkFrame, CTkLabel, CTkButton, set_appearance_mode, CTkTextbox
 from asteval import Interpreter
+import pyttsx3
 
 aeval = Interpreter()
+
+modo_dark = False
+
+engine = pyttsx3.init()
 
 #FUNÇÃO PARA MUDAR O TEMA
 def mudar_tema():
@@ -23,8 +28,10 @@ def calcular():
     texto_box.delete('0.0', 'end')
     texto_box.insert('0.0', resultado)
 
-# def voz()
-#     say(button.text)
+
+def voz(texto):
+    engine.say(texto)
+    engine.runAndWait()
 
 
 
@@ -32,6 +39,11 @@ def calcular():
 app=CTk()
 app.geometry("600x350")
 app.title("Calculadora")
+
+# Função para falar o número ao clicar
+def clique_botao(valor):
+    texto_box.insert("end", valor)
+    voz(valor)  # Falar o número clicado
 
 #BOTÕES
 btn7 = CTkButton(app,text='7', command= lambda:texto_box.insert("end", 7), corner_radius=20, width=80, height=55, font=("arial", 30))
@@ -95,10 +107,10 @@ texto_box.grid(row=1, column=5, columnspan=5, padx=5, pady=5)
 
 #BOTÃO PARA A TROCA DE TEMA
 botao_tema = CTkButton(master=app, text="Modo Escuro", font=("Arial", 13), command=mudar_tema, width= 110)
-botao_tema.grid(row=5 , column=1, padx = 2, pady= 2)
+botao_tema.grid(row=4 , column=1, padx = 2, pady= 2)
 
 #BOTÃO ACESSIBILIDADE
-# botao_voz = CTkButton(master = app, text = "Assessibilidade", font = ("Arial", 13), command = voz , width = 110)
-# botao_voz.grid(row=9, column=1, padx= 2, pady= 2)
+botao_voz = CTkButton(master = app, text = "Assessibilidade", font = ("Arial", 13), command = lambda: voz ("Modo de acessibilidade ativado."), width = 110)
+botao_voz.grid(row=5, column=1, padx= 2, pady= 2)
 
 app.mainloop()
