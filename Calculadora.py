@@ -4,8 +4,10 @@ import pyttsx3
 
 aeval = Interpreter()
 
-modo_dark = False
+modo_dark = True
+
 modo_acessibilidade= False
+
 engine = pyttsx3.init()
 
 #FUNÇÃO PARA MUDAR O TEMA
@@ -16,10 +18,13 @@ def mudar_tema():
     if modo_dark:
         set_appearance_mode("dark")
         botao_tema.configure(text="Modo Claro")
+        if modo_acessibilidade:
+            voz(str("modo escuro ativado"))
     else :
         set_appearance_mode("light")
         botao_tema.configure(text="Modo Escuro")
-
+        if modo_acessibilidade:
+            voz(str("modo claro ativado"))
 def alternar_acessibilidade():
     global modo_acessibilidade
    
@@ -47,13 +52,17 @@ def calcular():
 
 
 def voz(texto):
-    engine.say(texto)
+    engine.say(str(texto))
     engine.runAndWait()
 
-
-
+def backspace():
+    texto_atual = texto_box.get("0.0", "end").strip()
+    texto_box.delete("0.0", "end")
+    texto_box.insert("0.0", texto_atual[:-1])  # Remove o último caractere
+    if modo_acessibilidade: 
+        voz(str("Apagar"))
 #JANELA DO APLICATIVO
-app=CTk()
+app = CTk()
 app.geometry("600x350")
 app.title("Calculadora")
 
@@ -62,7 +71,7 @@ app.title("Calculadora")
 def clique_botao(valor):
     texto_box.insert("end", valor)
     if modo_acessibilidade:  # Falar o valor apenas se o modo de acessibilidade estiver ativado
-        voz(valor)
+        voz(str(valor))
 
 #Botoes
 btn7 = CTkButton(app,text='7', command= lambda:clique_botao(7), corner_radius=20, width=80, height=55, font=("arial", 30))
@@ -116,6 +125,9 @@ btn_dividir.grid(row = 4, column = 8, padx = 2, pady = 2)
 btn_multiplicar=CTkButton(app, text= "x", command= lambda : clique_botao("*"), corner_radius= 20, width= 80, height = 55, font =("arial", 30))
 btn_multiplicar.grid(row = 5, column = 8, padx = 2, pady = 2)
 
+btn_apagar = CTkButton(app, text = "<-", command = backspace ,corner_radius= 20, width= 80, height = 55, font =("arial", 30))
+btn_apagar.grid(row = 2, column = 9, padx = 2, pady = 2)
+
 #ICONE DO CABEÇALHO
 app.iconbitmap(r"icon\icon_header.ico")
 app.resizable(width=False, height=False)
@@ -123,21 +135,25 @@ app.resizable(width=False, height=False)
 #CAIXA DE TEXTO
 texto_box = CTkTextbox(app, width= 480, height=70, corner_radius=10, border_width=5, border_color='#042940', font=(('Arial', 50))) 
 texto_box.grid(row=1, column=5, columnspan=5, padx=5, pady=5)
+texto_box.bind("<Button-1>", lambda e: "break")
 
 def pressionar_tecla(event):
     tecla = event.char
     if tecla.isdigit() or tecla in ['+', '-', '*', '/', '.']:
         clique_botao(tecla)
     elif tecla == '\r':  # Enter key
-        calcular()
+        calcular() 
     elif tecla.lower() == 'c':  # 'C' key to clear
         texto_box.delete("0.0", "end")
-
+        if modo_acessibilidade:
+            voz(str("Apagar Tudo"))
+    elif event.keysym == "BackSpace":
+        backspace()
 # Bind das teclas
 app.bind("<Key>", pressionar_tecla)
 
 #BOTÃO PARA A TROCA DE TEMA
-botao_tema = CTkButton(master=app, text="Modo Escuro", font=("Arial", 13), command=mudar_tema, width= 110)
+botao_tema = CTkButton(master=app, text="Modo Claro", font=("Arial", 13), command=mudar_tema, width= 110)
 botao_tema.grid(row=4 , column=1, padx = 2, pady= 2)
 
 #BOTÃO ACESSIBILIDADE
